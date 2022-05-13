@@ -1,5 +1,3 @@
-
-
 import time
 import os
 import io
@@ -11,6 +9,17 @@ import win32con
 import math
 
 import threading
+
+######################
+# 新的方法不用输入用户浏览器Path了，可以直接调用系统默认浏览器
+# 需要用户设置的唯一参数（鼠标点击位置），即开始播放的按钮在屏幕的坐标位置
+# 打开一个视频，然后全屏截图之后在画图打开，切换到画笔
+# 然后看左下角显示的数字，分别就是x和y
+
+# 有不看的视频注释即可
+######################
+x = 465
+y = 1005
 
 urlAndTime = {
 # ［必修］第1课 红色保密 百年征程
@@ -24,12 +33,12 @@ urlAndTime = {
 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=568&doclibId=3&pubId=&resourceId=97080222-7653-4100-9587-7421556977e5':5.05, # 6.持续的技术对抗 0.1
 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=566&doclibId=3&pubId=&resourceId=25d0e1a9-dbbf-44b5-ac19-9c004f9f3407':4.57, # 7.领导的率先垂范 0.1
 # 第3课 “党史上的保密印记”系列
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=592&doclibId=3&pubId=&resourceId=1ac1cf02-5182-40b5-bb20-b2e1686cf57b':2.13, # 1.誓与密码共存亡 0.05
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=590&doclibId=3&pubId=&resourceId=70f222a1-5441-497c-8f84-6105dadd3737':3.40, # 2.革命航船破浪启航 0.08
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=588&doclibId=3&pubId=&resourceId=2a065b94-2a7d-4b8f-b581-1504a2451799':3.40, # 3.手摇发电机的长征之路 0.08
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=586&doclibId=3&pubId=&resourceId=4ed78416-c441-4328-8f64-407d5adfec4b':4.25, # 4.西安事变前夕 0.1
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=584&doclibId=3&pubId=&resourceId=22b35616-8830-400b-a74b-89bfd525f828':4.28, # 5.共和国的谍战玫瑰 0.1
-# 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=582&doclibId=3&pubId=&resourceId=8e703fa2-1592-4c78-8670-e346ff8e9ee5':3.51, # 6.一苏大的保密空城计 0.08
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=592&doclibId=3&pubId=&resourceId=1ac1cf02-5182-40b5-bb20-b2e1686cf57b':2.13, # 1.誓与密码共存亡 0.05
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=590&doclibId=3&pubId=&resourceId=70f222a1-5441-497c-8f84-6105dadd3737':3.40, # 2.革命航船破浪启航 0.08
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=588&doclibId=3&pubId=&resourceId=2a065b94-2a7d-4b8f-b581-1504a2451799':3.40, # 3.手摇发电机的长征之路 0.08
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=586&doclibId=3&pubId=&resourceId=4ed78416-c441-4328-8f64-407d5adfec4b':4.25, # 4.西安事变前夕 0.1
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=584&doclibId=3&pubId=&resourceId=22b35616-8830-400b-a74b-89bfd525f828':4.28, # 5.共和国的谍战玫瑰 0.1
+'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=582&doclibId=3&pubId=&resourceId=8e703fa2-1592-4c78-8670-e346ff8e9ee5':3.51, # 6.一苏大的保密空城计 0.08
 
 # ［必修］第1课 红线不能触碰底线不能逾越
 'http://www.baomi.org.cn/bmVideo?id=fc5489db-34c7-4db1-a856-96d501ea5a78&docId=644&doclibId=3&pubId=&resourceId=a91aafa5-d9b7-422e-aaa9-0e0c3045345c':5.47, # 1.利欲熏心窃秘密 锒铛入狱悔莫及
@@ -126,8 +135,14 @@ class childThread (threading.Thread):   #继承父类threading.Thread
         if(self.name == "chrome"):
             time.sleep(0.1)
             url = self.url
-            chrome_path = 'E:/Software/Google/Chrome/Application/chrome.exe %s'
-            webbrowser.get(chrome_path).open(url)
+
+            # 老方法需要填写用户本地浏览器地址，新方法直接调用用户默认浏览器
+            # chrome_path = 'C://Users//CZY//AppData//Local//Google//Chrome//Application//chrome.exe %s'
+            # webbrowser.get(chrome_path).open(url)
+
+            # 新方法，用户默认打开网页就行了
+            webbrowser.open(url)
+
             print("chrome threading over")
         elif(self.name == "play"):
 
@@ -138,7 +153,7 @@ class childThread (threading.Thread):   #继承父类threading.Thread
             time.sleep(8)
 
             # 模拟鼠标点击
-            mouse_click(443, 1001) # 点击开始播放图标 不同的人可能不太一样，我是根据我的屏幕浏览器全屏
+            mouse_click(x, y) # 点击开始播放图标 不同的人可能不太一样，我是根据我的屏幕浏览器全屏
 
             # 获取sleep时间
             video_time = urlAndTime[self.url]
