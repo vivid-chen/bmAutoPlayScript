@@ -144,7 +144,7 @@ class childThread (threading.Thread):   #继承父类threading.Thread
             video_time = urlAndTime[self.url]
             sleep_time = int(video_time)*60 + int(math.modf(video_time)[0]*100)
             print("sleep time = %f"%sleep_time)
-            time.sleep(sleep_time + 5) # 多看5秒钟，确保容错
+            time.sleep(sleep_time + 8) # 多看5秒钟，确保容错
 
 
             ###
