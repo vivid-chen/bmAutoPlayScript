@@ -177,7 +177,7 @@ for url in urlAndTime:
 
     # 先确保chrome被关闭了
     os.system("taskkill /im chrome.exe /f")
-    time.sleep(4)
+    time.sleep(2.5)
     
     # 创建子线程
     thread1 = childThread(1, "chrome", url)
