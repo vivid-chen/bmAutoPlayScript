@@ -124,7 +124,7 @@ class childThread (threading.Thread):   #继承父类threading.Thread
         self.url = url
     def run(self):                   #把要执行的代码写到run函数里面 线程在创建后会直接运行run函数 
         if(self.name == "chrome"):
-            time.sleep(1)
+            time.sleep(0.1)
             url = self.url
             chrome_path = 'E:/Software/Google/Chrome/Application/chrome.exe %s'
             webbrowser.get(chrome_path).open(url)
@@ -135,7 +135,7 @@ class childThread (threading.Thread):   #继承父类threading.Thread
             # threading.Lock().acquire()
 
             # 休眠一段时间，确保chrome完全加载完成
-            time.sleep(6)
+            time.sleep(7)
 
             # 模拟鼠标点击
             mouse_click(443, 1001) # 点击开始播放图标 不同的人可能不太一样，我是根据我的屏幕浏览器全屏
