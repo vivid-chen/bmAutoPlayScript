@@ -4,6 +4,8 @@
 依赖：
 python3
 webbrowser
+win32api
+win32con
 
 注意点：
 1.浏览器路径替换为用户自己浏览器的路径
