@@ -135,7 +135,7 @@ class childThread (threading.Thread):   #继承父类threading.Thread
             # threading.Lock().acquire()
 
             # 休眠一段时间，确保chrome完全加载完成
-            time.sleep(7)
+            time.sleep(8)
 
             # 模拟鼠标点击
             mouse_click(443, 1001) # 点击开始播放图标 不同的人可能不太一样，我是根据我的屏幕浏览器全屏
